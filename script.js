@@ -1,15 +1,46 @@
 const game = (() => {
-  const board = [
+  let board = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
   ];
 
-  let turn = 1;
-
   const getBoard = () => board;
 
-  const isWin = () => {
+  function Player(name, marker) {
+    if (!new.target) {
+      console.log(
+        "ERROR! In order to create a player you have to use new keyword.",
+      );
+    }
+
+    return { name, marker };
+  }
+
+  const player1 = new Player("Player 1", "X");
+  const player2 = new Player("Player 2", "O");
+  const player = [player1, player2];
+
+  let turn = 0;
+
+  const placeMarker = (row, column) => {
+    const marker = turn % 2 === 0 ? player[0].marker : player[1].marker;
+
+    if (board[row][column] === "") {
+      board[row][column] = marker;
+
+      turn++;
+    }
+  };
+
+  const setPlayerName = (number, name) => {
+    if (name !== "") {
+      player[number].name = name;
+    }
+  };
+
+  const getWinnerName = () => {
+    let name = "";
     let isVictory = false;
 
     let diagonal = [];
@@ -19,7 +50,7 @@ const game = (() => {
     }
 
     if (diagonal.every((cell) => cell === "")) {
-      return isVictory;
+      return name;
     }
 
     isVictory =
@@ -28,7 +59,9 @@ const game = (() => {
         : false;
 
     if (isVictory) {
-      return isVictory;
+      name = diagonal[0] === player[0].marker ? player[0].name : player[1].name;
+
+      return name;
     }
 
     let antiDiagonal = [];
@@ -40,7 +73,7 @@ const game = (() => {
     }
 
     if (antiDiagonal.every((cell) => cell === "")) {
-      return isVictory;
+      return name;
     }
 
     isVictory =
@@ -49,15 +82,25 @@ const game = (() => {
         : false;
 
     if (isVictory) {
-      return isVictory;
+      name =
+        antiDiagonal[0] === player[0].marker ? player[0].name : player[1].name;
+
+      return name;
     }
 
-    isVictory = board.some((row) =>
+    const indexOfMatchedRow = board.findIndex((row) =>
       row[0] !== "" ? row.every((cell) => cell === row[0]) : false,
     );
 
+    isVictory = indexOfMatchedRow === -1 ? false : true;
+
     if (isVictory) {
-      return isVictory;
+      name =
+        board[indexOfMatchedRow][0] === player[0].marker
+          ? player[0].name
+          : player[1].name;
+
+      return name;
     }
 
     for (let indexOfColumn = 0; indexOfColumn < 3; indexOfColumn++) {
@@ -71,58 +114,32 @@ const game = (() => {
         column[0] !== "" ? column.every((cell) => cell === column[0]) : false;
 
       if (isVictory) {
-        return isVictory;
+        name = column[0] === player[0].marker ? player[0].name : player[1].name;
+
+        return name;
       }
     }
 
-    return isVictory;
+    return name;
   };
 
-  const placeMarker = (row, column) => {
-    const marker = turn % 2 !== 0 ? "X" : "O";
+  const isTie = () => turn === 9;
 
-    if (board[row][column] === "") {
-      board[row][column] = marker;
-      turn++;
-    }
+  const reset = () => {
+    board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ];
+
+    turn = 0;
+
+    setPlayerName(0, "Player 1");
+    setPlayerName(0, "Player 2");
   };
 
-  return { getBoard, placeMarker, isWin };
+  return { getBoard, placeMarker, setPlayerName, getWinnerName, isTie, reset };
 })();
-
-// const player1 = {
-//   name: "Alex",
-//   marker: "X",
-// };
-
-// const player2 = {
-//   name: "Rocky",
-//   marker: "O",
-// };
-
-// game.placeMarker(1, 1, player1.marker);
-// console.table(game.getBoard());
-// game.placeMarker(0, 2, player2.marker);
-// console.table(game.getBoard());
-// game.placeMarker(0, 0, player1.marker);
-// console.table(game.getBoard());
-// game.placeMarker(2, 0, player2.marker);
-// console.table(game.getBoard());
-// game.placeMarker(2, 2, player1.marker);
-// console.table(game.getBoard());
-// game.placeMarker(1, 0, player2.marker);
-// console.table(game.getBoard());
-// game.placeMarker(2, 1, player1.marker);
-// console.table(game.getBoard());
-// game.placeMarker(0, 1, player2.marker);
-// console.table(game.getBoard());
-// game.placeMarker(2, 0, player2.marker);
-
-// game.placeMarker(0, 2, "X");
-// game.placeMarker(1, 2, "X");
-// game.placeMarker(2, 2, "X");
-// console.table(game.getBoard());
-// console.log(game.isWin());
 
 const gameContainer = document.querySelector("#game-container");
 
@@ -131,7 +148,7 @@ const displayGame = () => {
     .getBoard()
     .flatMap((row, indexOfRow) => {
       return row.map((cell, indexOfColumn) => {
-        return `<button data-position="${indexOfRow + "-" + indexOfColumn}" class="border-2 cursor-pointer transition-all hover:bg-green-700 button">${cell}</button>`;
+        return `<button data-position="${indexOfRow + "-" + indexOfColumn}" class="border-2 text-3xl font-black cursor-pointer transition-all hover:border-purple-800 hover:bg-purple-200 button">${cell}</button>`;
       });
     })
     .join("");
@@ -139,7 +156,7 @@ const displayGame = () => {
   gameContainer.innerHTML = buttons;
 };
 
-displayGame();
+const result = document.querySelector("#result");
 
 gameContainer.addEventListener("click", (event) => {
   const button = event.target.closest(".button");
@@ -151,18 +168,54 @@ gameContainer.addEventListener("click", (event) => {
   game.placeMarker(row, column);
   displayGame();
 
-  if (game.isWin()) {
-    console.log("Win!");
+  const displayResult = (name) => {
+    result.classList.add("border-2");
 
-    const buttons = game
-      .getBoard()
-      .flatMap((row, indexOfRow) => {
-        return row.map((cell, indexOfColumn) => {
-          return `<button disabled data-position="${indexOfRow + "-" + indexOfColumn}" class="border-2 cursor-pointer transition-all hover:bg-green-700 button">${cell}</button>`;
-        });
-      })
-      .join("");
+    if (name !== "") {
+      result.classList.add("text-green-600");
+    } else {
+      result.classList.add("text-yellow-600");
+    }
 
-    gameContainer.innerHTML = buttons;
+    result.textContent =
+      name !== ""
+        ? `Congratulations! ${name} won the game.`
+        : "Tie! Play again using the restart button.";
+  };
+
+  const winner = game.getWinnerName();
+
+  if (winner !== "") {
+    document
+      .querySelectorAll(".button")
+      .forEach((button) => (button.disabled = true));
+
+    displayResult(winner);
+  } else if (game.isTie()) {
+    displayResult("");
   }
+});
+
+const startButton = document.querySelector("#start");
+
+startButton.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  game.reset();
+
+  const player1Name = document.querySelector("#player1").value;
+  const player2Name = document.querySelector("#player2").value;
+
+  game.setPlayerName(0, player1Name);
+  game.setPlayerName(1, player2Name);
+
+  gameContainer.classList.add("border-2");
+  result.classList.remove("border-2");
+  result.classList.remove("text-green-600");
+  result.classList.remove("text-yellow-600");
+  result.textContent = "";
+
+  displayGame();
+
+  startButton.textContent = "Restart";
 });

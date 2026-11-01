@@ -7,20 +7,53 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <h1 class="mt-7 text-4xl text-center font-black uppercase tracking-tighter">
+      Tic Tac Toe
+    </h1>
+
+    <form class="grid grid-cols-1 justify-center my-12 gap-y-7">
+      <div class="flex justify-center items-center gap-3">
+        <label class="uppercase" for="player1">Player 1( X )</label>
+
+        <input
+          class="outline-0 border-2 px-2 py-1 rounded-2xl focus:border-purple-800"
+          type="text"
+          name="player1"
+          id="player1"
+        />
+      </div>
+
+      <div class="text-center text-2xl font-black">VS</div>
+
+      <div class="flex justify-center items-center gap-3">
+        <label class="uppercase" for="player2">Player 2( O )</label>
+
+        <input
+          class="outline-0 border-2 px-2 py-1 rounded-2xl focus:border-purple-800"
+          type="text"
+          name="player2"
+          id="player2"
+        />
+      </div>
+
+      <button
+        class="md:w-fit mx-3 md:mx-auto md:px-9 py-3 bg-black border-2 rounded-lg text-white font-bold tracking-widest uppercase cursor-pointer hover:bg-white hover:text-black transition-all"
+        id="start"
+      >
+        Start
+      </button>
+    </form>
+
+    <output
+      class="flex md:w-fit mx-3 md:mx-auto px-5 py-3 rounded-2xl text-3xl text-center leading-tight uppercase"
+      id="result"
+    >
+    </output>
+
     <div
       id="game-container"
-      class="w-96 h-96 border-2 mx-auto mt-20 grid grid-cols-3 grid-rows-3"
-    >
-      <!-- <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button>
-      <button class="border-2 cursor-pointer transition-all hover:bg-green-700"></button> -->
-    </div>
+      class="w-110 h-110 sm:w-120 sm:h-120 grid grid-cols-3 grid-rows-3 mx-auto my-12"
+    ></div>
 
     <script src="./script.js"></script>
   </body>
