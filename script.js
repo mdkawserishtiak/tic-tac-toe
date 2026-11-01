@@ -5,6 +5,8 @@ const game = (() => {
     ["", "", ""],
   ];
 
+  let turn = 1;
+
   const getBoard = () => board;
 
   const isWin = () => {
@@ -76,9 +78,12 @@ const game = (() => {
     return isVictory;
   };
 
-  const placeMarker = (row, column, marker) => {
+  const placeMarker = (row, column) => {
+    const marker = turn % 2 !== 0 ? "X" : "O";
+
     if (board[row][column] === "") {
       board[row][column] = marker;
+      turn++;
     }
   };
 
@@ -118,3 +123,46 @@ const game = (() => {
 // game.placeMarker(2, 2, "X");
 // console.table(game.getBoard());
 // console.log(game.isWin());
+
+const gameContainer = document.querySelector("#game-container");
+
+const displayGame = () => {
+  const buttons = game
+    .getBoard()
+    .flatMap((row, indexOfRow) => {
+      return row.map((cell, indexOfColumn) => {
+        return `<button data-position="${indexOfRow + "-" + indexOfColumn}" class="border-2 cursor-pointer transition-all hover:bg-green-700 button">${cell}</button>`;
+      });
+    })
+    .join("");
+
+  gameContainer.innerHTML = buttons;
+};
+
+displayGame();
+
+gameContainer.addEventListener("click", (event) => {
+  const button = event.target.closest(".button");
+
+  if (!button) return;
+
+  const [row, column] = button.dataset.position.split("-");
+
+  game.placeMarker(row, column);
+  displayGame();
+
+  if (game.isWin()) {
+    console.log("Win!");
+
+    const buttons = game
+      .getBoard()
+      .flatMap((row, indexOfRow) => {
+        return row.map((cell, indexOfColumn) => {
+          return `<button disabled data-position="${indexOfRow + "-" + indexOfColumn}" class="border-2 cursor-pointer transition-all hover:bg-green-700 button">${cell}</button>`;
+        });
+      })
+      .join("");
+
+    gameContainer.innerHTML = buttons;
+  }
+});
