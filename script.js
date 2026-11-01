@@ -135,7 +135,7 @@ const game = (() => {
     turn = 0;
 
     setPlayerName(0, "Player 1");
-    setPlayerName(0, "Player 2");
+    setPlayerName(1, "Player 2");
   };
 
   return { getBoard, placeMarker, setPlayerName, getWinnerName, isTie, reset };

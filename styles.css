@@ -9,7 +9,6 @@
     monospace;
     --color-yellow-600: oklch(68.1% 0.162 75.834);
     --color-green-600: oklch(62.7% 0.194 149.214);
-    --color-green-700: oklch(52.7% 0.154 150.069);
     --color-purple-200: oklch(90.2% 0.063 306.703);
     --color-purple-800: oklch(43.8% 0.218 303.724);
     --color-black: #000;
@@ -201,11 +200,11 @@
   .grid {
     display: grid;
   }
-  .h-110 {
-    height: calc(var(--spacing) * 110);
+  .h-80 {
+    height: calc(var(--spacing) * 80);
   }
-  .w-110 {
-    width: calc(var(--spacing) * 110);
+  .w-80 {
+    width: calc(var(--spacing) * 80);
   }
   .cursor-pointer {
     cursor: pointer;
@@ -335,6 +334,10 @@
     }
     .sm\:w-120 {
       width: calc(var(--spacing) * 120);
+    }
+    .sm\:text-3xl {
+      font-size: var(--text-3xl);
+      line-height: var(--tw-leading, var(--text-3xl--line-height));
     }
   }
   @media (width >= 48rem) {
